@@ -1,4 +1,4 @@
-import React, { StrictMode, useEffect, useState } from 'react';
+import React, { Fragment, StrictMode, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 
@@ -66,39 +66,46 @@ function Header() {
 }
 
 function Menu() {
+  // const pizzas = [];
+  const pizzas = pizzaData;
+
   return (
     <main className='menu'>
       <h2>Our menu</h2>
-      <Pizza
-        name='focaccia'
-        ingredients='Bread with italian olive oil and rosemary'
-        price={6}
-      />
-      <Pizza
-        name='spinaci'
-        ingredients='Tomato, mozarella, spinach, and ricotta cheese'
-        price={12}
-      />
-      <Pizza
-        name='funghi'
-        ingredients='Tomato, mozarella, mushrooms, and onion'
-        price={12}
-      />
-      <Pizza name='margherita' ingredients='Tomato and mozarella' price={10} />
+
+      {pizzas.length > 0 ? (
+        <>
+          <p>
+            Authentic Italian cuisine. 6 creative dishes to choose from. All
+            from our stone oven, all organic, all delicious.
+          </p>
+          <ul className='pizzas'>
+            {pizzas.map((data) => {
+              return <Pizza pizzaObj={data} key={data.name} />;
+            })}
+          </ul>
+        </>
+      ) : (
+        <p>We're still working on the menu. Please come back later :)</p>
+      )}
     </main>
   );
 }
 
-function Pizza(props) {
+function Pizza({ pizzaObj }) {
+  console.log(pizzaObj);
+
+  //if (pizzaObj.soldOut) return null;
+
   return (
-    <div className='pizza'>
-      <img src={`pizzas/${props.name}.jpg`} alt={`Pizza ${props.name}`} />
+    <li className={`pizza ${pizzaObj.soldOut ? 'sold-out' : ''}`}>
+      <img src={pizzaObj.photoName} alt={pizzaObj.name} />
       <div>
-        <h3>Pizza {props.name}</h3>
-        <p>{props.ingredients}</p>
-        <span>{props.price}</span>
+        <h3>{pizzaObj.name}</h3>
+        <p>{pizzaObj.ingredients}</p>
+        <span>{pizzaObj.soldOut ? 'SOLD OUT' : pizzaObj.price}</span>
       </div>
-    </div>
+    </li>
   );
 }
 
@@ -117,7 +124,30 @@ function Footer() {
     }, 1000);
   }, []);
 
-  return <footer className='footer'>{time}. We are currently open!</footer>;
+  return (
+    <footer className='footer'>
+      <Order
+        openHour={openHour}
+        closeHour={closeHour}
+        isOpen={isOpen}
+        time={time}
+      />
+    </footer>
+  );
+}
+
+function Order({ time, isOpen, openHour, closeHour }) {
+  return (
+    <div className='order'>
+      <p>
+        {time}. We are currently {isOpen ? 'open' : 'closed'}!
+      </p>
+      <p>
+        Opening hours: {openHour}h - {closeHour}h.
+      </p>
+      {isOpen && <button className='btn'>Order</button>}
+    </div>
+  );
 }
 
 const root = createRoot(document.querySelector('#root'));

@@ -21,6 +21,10 @@ body {
   padding-bottom: 6rem;
 }
 
+footer {
+  text-align: center;
+}
+
 .container {
   max-width: 80rem;
   margin: 0 auto;
